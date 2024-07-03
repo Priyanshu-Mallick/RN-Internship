@@ -6,7 +6,10 @@
       "firebaseProjectId": "YOUR_PROJECT_ID",
       "firebaseStorageBucket": "YOUR_STORAGE_BUCKET",
       "firebaseMessagingSenderId": "YOUR_MESSAGING_SENDER_ID",
-      "firebaseAppId": "YOUR_APP_ID"
+      "firebaseAppId": "YOUR_APP_ID",
+      "eas": {
+        "projectId": "5e35e27c-2be6-44a5-97e8-88f1bb89b253"
+      }
     },
     "name": "NIKE",
     "slug": "NIKE",
@@ -20,13 +23,20 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app needs access to your location to get the current location."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION"
+      ],
+      "package": "com.priyanshu_mallick.NIKE"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -1,14 +1,32 @@
 import React, { useContext } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { ScreenWidth } from 'react-native-elements/dist/helpers';
 import CartContext from '../services/CartContext';
 
 export default function PopularShoeCard({ id, image, title, price, isFavorite }) {
-    const { dispatch } = useContext(CartContext);
+    const { cart, dispatch } = useContext(CartContext);
 
-    const addToCart = () => {
-        dispatch({ type: 'ADD_TO_CART', payload: { id, image, title, price } });
-        ToastAndroid.show('Item added to cart', ToastAndroid.SHORT);
+    const inCart = cart.some(item => item.id === id);
+
+    const handleAddToCart = () => {
+        if (inCart) {
+            Alert.alert(
+                "Remove Item",
+                "Are you sure you want to remove this item from the cart?",
+                [
+                    {
+                        text: "Cancel",
+                        style: "cancel"
+                    },
+                    {
+                        text: "Yes",
+                        onPress: () => dispatch({ type: 'REMOVE_FROM_CART', payload: { id } })
+                    }
+                ]
+            );
+        } else {
+            dispatch({ type: 'ADD_TO_CART', payload: { id, image, title, price } });
+        }
     };
 
     return (
@@ -25,8 +43,11 @@ export default function PopularShoeCard({ id, image, title, price, isFavorite })
                 <Text style={styles.title}>{title}</Text>
                 <Text style={styles.price}>₹{price}</Text>
             </View>
-            <TouchableOpacity style={styles.addToCartButton} onPress={addToCart}>
-                <Image source={require('../../assets/add-to-cart.png')} style={styles.addToCartIcon} />
+            <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
+                <Image
+                    source={inCart ? require('../../assets/tick.png') : require('../../assets/add-to-cart.png')}
+                    style={styles.addToCartIcon}
+                />
             </TouchableOpacity>
         </View>
     );
@@ -39,9 +60,8 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         padding: 10,
         marginBottom: 20,
-        marginRight: 20,
-        marginLeft: 5,
-        elevation: 3,
+        marginRight: 10,
+        marginLeft: 16,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,

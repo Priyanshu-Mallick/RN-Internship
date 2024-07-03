@@ -13,9 +13,18 @@ const CustomTextField = ({
     showIcon,
     iconName,
     onIconPress,
+    keyboardType = 'default',
+    maxLength,
+    leftIconName,
+    onLeftIconPress,
 }) => {
     return (
         <View style={[styles.inputContainer, isValid === false && styles.invalidInput, isValid === true && styles.validInput]}>
+            {leftIconName && (
+                <TouchableOpacity onPress={onLeftIconPress}>
+                    <Ionicons name={leftIconName} size={24} color="#007AFF" style={styles.leftIcon} />
+                </TouchableOpacity>
+            )}
             <TextInput
                 style={styles.input}
                 value={value}
@@ -23,10 +32,12 @@ const CustomTextField = ({
                 placeholder={placeholder}
                 secureTextEntry={secureTextEntry}
                 onBlur={onBlur}
+                keyboardType={keyboardType}
+                maxLength={maxLength}
             />
-            {showIcon && (
+            {isValid === true && showIcon && (
                 <TouchableOpacity onPress={onIconPress}>
-                    <Ionicons name={iconName} size={24} color={isValid !== null ? (isValid ? "#34A853" : "#EB4335") : "#707B81"} />
+                    <Ionicons name={iconName} size={24} color="#007AFF" />
                 </TouchableOpacity>
             )}
         </View>
@@ -54,6 +65,9 @@ const styles = StyleSheet.create({
     validInput: {
         borderWidth: 1,
         borderColor: '#34A853',
+    },
+    leftIcon: {
+        marginRight: 10,
     },
 });
 

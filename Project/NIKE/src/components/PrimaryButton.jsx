@@ -3,8 +3,8 @@ import { TouchableOpacity, Text, StyleSheet, Dimensions, Image, View } from 'rea
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const PrimaryButton = ({ onPress, title, backgroundColor, textColor, icon, marginTop, marginBottom }) => (
-    <TouchableOpacity style={[styles.button, { backgroundColor, marginTop, marginBottom }]} onPress={onPress}>
+const PrimaryButton = ({ onPress, title, backgroundColor, textColor, icon, marginTop, marginBottom, width }) => (
+    <TouchableOpacity style={[styles.button, { backgroundColor, marginTop, marginBottom, width: width || screenWidth - 40 }]} onPress={onPress}>
         <View style={styles.contentContainer}>
             {icon && <Image source={icon} style={styles.icon} />}
             <Text style={[styles.buttonText, { color: textColor }]}>{title}</Text>
@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
     button: {
         height: 50,
         paddingVertical: 10,
-        width: screenWidth - 40,
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
