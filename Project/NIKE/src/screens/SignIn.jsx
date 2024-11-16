@@ -1,3 +1,4 @@
+// screens/SignIn.js
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import CustomTextField from '../components/CustomTextField';
@@ -60,7 +61,7 @@ export default function SignIn({ navigation }) {
             />
             {passwordValid === false && <Text style={styles.errorText}>Password must be at least 8 characters</Text>}
 
-            <Text style={styles.recoveryText}>Recovery Password</Text>
+            <Text style={styles.recoveryText} onPress={() => navigation.navigate('ForgotPassword')}>Recovery Password</Text>
             <PrimaryButton
                 onPress={handleSignIn}
                 title="Sign In"

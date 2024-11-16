@@ -51,7 +51,7 @@ const CustomTabBar = (props) => {
                         } else if (route.name === 'CartPlaceholder') {
                             iconSource = require('../../assets/add-to-cart.png');
                         } else if (route.name === 'Notifications') {
-                            iconSource = require('../../assets/notification.png');
+                            iconSource = require('../../assets/orders.png');
                         } else if (route.name === 'Profile') {
                             iconSource = require('../../assets/user.png');
                         }

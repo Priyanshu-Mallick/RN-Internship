@@ -36,7 +36,7 @@
       "permissions": [
         "ACCESS_FINE_LOCATION"
       ],
-      "package": "com.priyanshu_mallick.NIKE"
+      "package": "com.priyanshumallick.NIKE"
     },
     "web": {
       "favicon": "./assets/favicon.png"

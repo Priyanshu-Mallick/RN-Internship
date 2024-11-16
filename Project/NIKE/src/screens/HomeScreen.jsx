@@ -135,6 +135,7 @@ export default function HomeScreen() {
                                 title={item.title}
                                 price={item.price}
                                 isFavorite={item.isFavorite}
+                                numColumns={numColumns}
                             />
                         </TouchableOpacity>
                     )}

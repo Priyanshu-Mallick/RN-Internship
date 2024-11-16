@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-na
 import { ScreenWidth } from 'react-native-elements/dist/helpers';
 import CartContext from '../services/CartContext';
 
-export default function PopularShoeCard({ id, image, title, price, isFavorite }) {
+export default function PopularShoeCard({ id, image, title, price, isFavorite, numColumns }) {
     const { cart, dispatch } = useContext(CartContext);
 
     const inCart = cart.some(item => item.id === id);
@@ -30,18 +30,20 @@ export default function PopularShoeCard({ id, image, title, price, isFavorite })
     };
 
     return (
-        <View style={styles.card}>
+        <View style={[styles.card, numColumns === 1 && styles.cardSingle]}>
             <TouchableOpacity style={styles.favoriteIcon}>
                 <Image
                     source={isFavorite ? require('../../assets/fevorite-filled.png') : require('../../assets/fevorite-outlined.png')}
                     style={styles.icon}
                 />
             </TouchableOpacity>
-            <Image source={image} style={styles.image} />
-            <View style={styles.textContainer}>
-                <Text style={styles.label}>BEST SELLER</Text>
-                <Text style={styles.title}>{title}</Text>
-                <Text style={styles.price}>₹{price}</Text>
+            <View style={[styles.contentContainer, numColumns === 1 && styles.contentContainerSingle]}>
+                <Image source={image} style={[styles.image, numColumns === 1 && styles.imageSingle]} />
+                <View style={[styles.textContainer, numColumns === 1 && styles.textContainerSingle]}>
+                    <Text style={styles.label}>BEST SELLER</Text>
+                    <Text style={styles.title}>{title}</Text>
+                    <Text style={styles.price}>₹{price}</Text>
+                </View>
             </View>
             <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
                 <Image
@@ -67,6 +69,13 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 3,
     },
+    cardSingle: {
+        width: ScreenWidth * 0.9,
+        marginLeft: ScreenWidth * 0.05,
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 15, // added padding to make it look nicer in single item view
+    },
     favoriteIcon: {
         position: 'absolute',
         top: 15,
@@ -77,14 +86,34 @@ const styles = StyleSheet.create({
         width: 24,
         height: 24,
     },
+    contentContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    contentContainerSingle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
     image: {
         width: '100%',
         height: 120,
         resizeMode: 'contain',
         marginBottom: 10,
     },
+    imageSingle: {
+        width: '40%',
+        height: 120,
+        resizeMode: 'contain',
+        marginBottom: 0,
+    },
     textContainer: {
         marginBottom: 10,
+    },
+    textContainerSingle: {
+        flex: 1,
+        marginLeft: 10,
     },
     label: {
         fontSize: 12,

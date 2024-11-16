@@ -1,9 +1,12 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { RadioButton } from 'react-native-paper';
+import RazorpayCheckout from 'react-native-razorpay';
 import CartContext from '../services/CartContext';
 import PrimaryButton from '../components/PrimaryButton';
+import CustomDialog from '../components/CustomDialogue';
 
 const CheckoutScreen = () => {
     const navigation = useNavigation();
@@ -13,10 +16,38 @@ const CheckoutScreen = () => {
     const { dispatch } = useContext(CartContext);
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState('COD');
 
     const handleCheckout = () => {
-        dispatch({ type: 'CLEAR_CART' });
-        setModalVisible(true);
+        if (paymentMethod === 'Online') {
+            const options = {
+                description: 'Order Payment',
+                image: 'https://your-logo-url.png',
+                currency: 'INR',
+                key: 'rzp_test_xCxaVcA8pJzyiT', // Your Razorpay Key ID
+                amount: totalCost * 100, // Razorpay accepts amount in paise
+                name: 'NIKE',
+                prefill: {
+                    email: 'priyanshumallick@gmail.com',
+                    contact: '+919937991865',
+                    name: 'Priyanshu Mallick'
+                },
+                theme: { color: '#007AFF' }
+            };
+            RazorpayCheckout.open(options).then((data) => {
+                // Handle successful payment here
+                Alert.alert(`Success: ${data.razorpay_payment_id}`);
+                dispatch({ type: 'CLEAR_CART' });
+                setModalVisible(true);
+            }).catch((error) => {
+                // Handle failed payment here
+                console.log(`${error.code} | ${error.description}`);
+                Alert.alert(`Error: ${error.code} | ${error.description}`);
+            });
+        } else {
+            dispatch({ type: 'CLEAR_CART' });
+            setModalVisible(true);
+        }
     };
 
     const handleBackToShopping = () => {
@@ -54,10 +85,25 @@ const CheckoutScreen = () => {
                     </TouchableOpacity>
 
                     <Text style={styles.sectionTitle}>Payment Method</Text>
-                    <View style={styles.paymentRow}>
-                        <Image source={{ uri: 'https://via.placeholder.com/24' }} style={styles.paymentIcon} />
-                        <Text style={styles.infoText}>Credit Card</Text>
-                        <Text style={styles.infoText}>**** **** 0696 4629</Text>
+                    <View style={styles.paymentMethodContainer}>
+                        <View style={styles.radioOption}>
+                            <RadioButton
+                                value="COD"
+                                status={paymentMethod === 'COD' ? 'checked' : 'unchecked'}
+                                onPress={() => setPaymentMethod('COD')}
+                                color="#007AFF"
+                            />
+                            <Text style={styles.radioText}>COD</Text>
+                        </View>
+                        <View style={styles.radioOption}>
+                            <RadioButton
+                                value="Online"
+                                status={paymentMethod === 'Online' ? 'checked' : 'unchecked'}
+                                onPress={() => setPaymentMethod('Online')}
+                                color="#007AFF"
+                            />
+                            <Text style={styles.radioText}>Online Payment</Text>
+                        </View>
                     </View>
                 </View>
             </ScrollView>
@@ -79,31 +125,15 @@ const CheckoutScreen = () => {
                     onPress={handleCheckout}
                     backgroundColor="#007AFF"
                     textColor="#FFFFFF"
-                    marginTop={20}
                 />
             </View>
-
-            <Modal
+            <CustomDialog
                 visible={modalVisible}
-                animationType="slide"
-                transparent={true}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Ionicons name="checkmark-circle" size={80} color="#4BB543" />
-                        <Text style={styles.modalText}>Your Order has been placed</Text>
-                        <PrimaryButton
-                            title="Back to Shopping"
-                            onPress={handleBackToShopping}
-                            backgroundColor="#007AFF"
-                            textColor="#FFFFFF"
-                            marginTop={20}
-                            width={300}
-                        />
-                    </View>
-                </View>
-            </Modal>
+                onClose={handleBackToShopping}
+                icon={require('../../assets/confirmation.png')}
+                title="Order Placed"
+                message="Your order has been placed successfully!"
+            />
         </View>
     );
 };
@@ -139,7 +169,7 @@ const styles = StyleSheet.create({
     scrollContent: {
         flexGrow: 1,
         paddingHorizontal: 20,
-        paddingBottom: 80,
+        paddingBottom: 100,
     },
     card: {
         backgroundColor: '#FFFFFF',
@@ -149,7 +179,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        marginTop: 40
     },
     sectionTitle: {
         fontSize: 18,
@@ -195,6 +224,21 @@ const styles = StyleSheet.create({
         height: 24,
         marginRight: 10,
     },
+    paymentMethodContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginVertical: 10,
+    },
+    radioOption: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    radioText: {
+        fontSize: 16,
+        color: '#2B2B2B',
+        marginLeft: 5,
+    },
     summaryContainer: {
         padding: 20,
         borderTopWidth: 1,
@@ -203,6 +247,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
+        backgroundColor: '#F7F7F9',
     },
     summaryRow: {
         flexDirection: 'row',
@@ -218,25 +263,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#2B2B2B',
         marginBottom: 20,
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContent: {
-        width: '80%',
-        backgroundColor: 'white',
-        padding: 20,
-        borderRadius: 10,
-        alignItems: 'center',
-    },
-    modalText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginVertical: 20,
-        textAlign: 'center',
     },
 });
 

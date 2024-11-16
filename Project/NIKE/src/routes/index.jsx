@@ -1,3 +1,4 @@
+// navigation/Routes.js
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreen from '../screens/SplashScreen';
@@ -9,6 +10,7 @@ import ProductDetailsScreen from '../screens/ProductDetailsScreen';
 import CartScreen from '../screens/CartScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
 import MapScreen from '../screens/MapScreen';
+import ForgotPassword from '../screens/ForgotPassword';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +26,7 @@ function Routes() {
             <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Checkout" component={CheckoutScreen} options={{ headerShown: false }} />
             <Stack.Screen name="MapScreen" component={MapScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 }
